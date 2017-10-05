@@ -108,6 +108,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
 						if(jogos.get(l).j.numJogador==1){
 							jogos.get(i).j.numJogador = 2;
+							jogos.get(i).j.vez = 0;
 							return jogos.get(i).j.numJogador;
 						}
 						if(jogos.get(l).j.numJogador==2){
@@ -121,10 +122,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						    if(randomNum==1){
 						    	jogos.get(i).j.vez = 1;
 						    	jogos.get(l).j.numJogador = 2;
+						    	jogos.get(l).j.vez = 0;
 						    }
 						    if(randomNum == 2){
 						    	jogos.get(l).j.vez = 1;
 						    	jogos.get(l).j.numJogador = 1;
+						    	jogos.get(i).j.vez = 0;
 						    }
 							return randomNum;
 						}
@@ -219,6 +222,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 0 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
 							if(tabuleiro[0][0] == '.'){
 								tabuleiro[0][0] = 'C';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -227,6 +236,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 0 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
 							if(tabuleiro[0][0] == '.'){
 								tabuleiro[0][0] = 'c';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -235,6 +250,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 1 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
 							if(tabuleiro[0][1] == '.'){
 								tabuleiro[0][1] = 'C';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -243,6 +264,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 1 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
 							if(tabuleiro[0][1] == '.'){
 								tabuleiro[0][1] = 'c';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -251,6 +278,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 2 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
 							if(tabuleiro[0][2] == '.'){
 								tabuleiro[0][2] = 'C';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -259,6 +292,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 2 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
 							if(tabuleiro[0][2] == '.'){
 								tabuleiro[0][2] = 'c';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -267,6 +306,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 3 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
 							if(tabuleiro[1][0] == '.'){
 								tabuleiro[1][0] = 'C';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -275,6 +320,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 3 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
 							if(tabuleiro[1][0] == '.'){
 								tabuleiro[1][0] = 'c';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -283,6 +334,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 4 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
 							if(tabuleiro[1][1] == '.'){
 								tabuleiro[1][1] = 'C';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -291,6 +348,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 4 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
 							if(tabuleiro[1][1] == '.'){
 								tabuleiro[1][1] = 'c';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -299,6 +362,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 5 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
 							if(tabuleiro[1][2] == '.'){
 								tabuleiro[1][2] = 'C';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -307,6 +376,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 5 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
 							if(tabuleiro[1][2] == '.'){
 								tabuleiro[1][2] = 'c';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -315,6 +390,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 6 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
 							if(tabuleiro[2][0] == '.'){
 								tabuleiro[2][0] = 'C';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -323,6 +404,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 6 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
 							if(tabuleiro[2][0] == '.'){
 								tabuleiro[2][0] = 'c';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -331,6 +418,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 7 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
 							if(tabuleiro[2][1] == '.'){
 								tabuleiro[2][1] = 'C';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -339,6 +432,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 7 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
 							if(tabuleiro[2][1] == '.'){
 								tabuleiro[2][1] = 'c';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -347,6 +446,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 8 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
 							if(tabuleiro[2][2] == '.'){
 								tabuleiro[2][2] = 'C';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -355,6 +460,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 8 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
 							if(tabuleiro[2][2] == '.'){
 								tabuleiro[2][2] = 'c';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -367,6 +478,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 0 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
 							if(tabuleiro[0][0] == '.'){
 								tabuleiro[0][0] = 'E';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -375,6 +492,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 0 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
 							if(tabuleiro[0][0] == '.'){
 								tabuleiro[0][0] = 'e';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -383,6 +506,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 1 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
 							if(tabuleiro[0][1] == '.'){
 								tabuleiro[0][1] = 'E';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -391,6 +520,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 1 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
 							if(tabuleiro[0][1] == '.'){
 								tabuleiro[0][1] = 'e';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -399,6 +534,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 2 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
 							if(tabuleiro[0][2] == '.'){
 								tabuleiro[0][2] = 'E';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -407,6 +548,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 2 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
 							if(tabuleiro[0][2] == '.'){
 								tabuleiro[0][2] = 'e';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -415,6 +562,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 3 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
 							if(tabuleiro[1][0] == '.'){
 								tabuleiro[1][0] = 'E';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -423,6 +576,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 3 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
 							if(tabuleiro[1][0] == '.'){
 								tabuleiro[1][0] = 'e';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -431,6 +590,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 4 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
 							if(tabuleiro[1][1] == '.'){
 								tabuleiro[1][1] = 'E';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -439,6 +604,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 4 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
 							if(tabuleiro[1][1] == '.'){
 								tabuleiro[1][1] = 'e';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -447,6 +618,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 5 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
 							if(tabuleiro[1][2] == '.'){
 								tabuleiro[1][2] = 'E';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -455,6 +632,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 5 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
 							if(tabuleiro[1][2] == '.'){
 								tabuleiro[1][2] = 'e';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -463,6 +646,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 6 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
 							if(tabuleiro[2][0] == '.'){
 								tabuleiro[2][0] = 'E';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -471,6 +660,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 6 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
 							if(tabuleiro[2][0] == '.'){
 								tabuleiro[2][0] = 'e';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -479,6 +674,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 7 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
 							if(tabuleiro[2][1] == '.'){
 								tabuleiro[2][1] = 'E';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -487,6 +688,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 7 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
 							if(tabuleiro[2][1] == '.'){
 								tabuleiro[2][1] = 'e';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -495,6 +702,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 8 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
 							if(tabuleiro[2][2] == '.'){
 								tabuleiro[2][2] = 'E';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
@@ -503,6 +716,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(pos == 8 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
 							if(tabuleiro[2][2] == '.'){
 								tabuleiro[2][2] = 'e';
+								jogos.get(i).j.vez = 0;
+								for(int l = 0; l<jogos.size(); l++){
+									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+										jogos.get(l).j.vez = 1;
+									}
+								}
 								return 1;
 							}else{
 								return -1;
