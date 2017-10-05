@@ -27,13 +27,18 @@ public class JogoCliente {
 				System.out.println("1 - Obter oponente");
 				System.out.println("2 - Tem partida");
 				System.out.println("3 - Obter tabuleiro");
-				System.out.println("4 - Eh minha vez");
+				System.out.println("4 - Eh minha vez/Verifica vencedor");
 				System.out.println("5 - Posiciona peca");
 				System.out.println("6 - Move peca");
 				System.out.println("7 - Encerrar partida");
 				opcao = entrada2.nextInt();
 				switch(opcao){
-					case 1: System.out.println(j.obtemOponente(id));
+					case 1: String o = j.obtemOponente(id);
+						System.out.println(o);
+						if(o.equals("Tempo Esgotado")){
+							System.out.println(j.encerraPartida(id));
+							continua = 0;
+						}
 						break;
 					case 2: System.out.println(j.temPartida(id));
 						break;

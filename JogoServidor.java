@@ -12,7 +12,8 @@ public class JogoServidor {
 			System.out.println("RMI registry already running.");			
 		}
 		try{
-			Naming.rebind("Jogo", new Jogo(new Jogador(null,0,0,0)));
+			char[][] tabuleiro = new char[3][3];
+			Naming.rebind("Jogo", new Jogo(new Jogador(null,0,0,0), tabuleiro));
 			System.out.println("JogoServidor esta pronto!");
 		}catch (Exception e){
 			System.out.println("Falha JogoServidor!");

@@ -38,14 +38,16 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	private static int idJogo = 1;
 	private int numParticipantes;
 	private Jogador j;
+	private long contTemBuscaJog;
 	
 	
-	public Jogo(Jogador j/*int numParticipantes, Jogador j, int idJogo*/) throws RemoteException {
+	public Jogo(Jogador j, char[][] tabuleiro/*int numParticipantes, Jogador j, int idJogo*/) throws RemoteException {
 		this.numParticipantes = numParticipantes;
 		this.j = j;
 		//this.idJogo = idJogo;
 		jogadores = new ArrayList<Jogador>();
 		jogos = new ArrayList<Jogo>();
+		this.tabuleiro = tabuleiro;
 		for(int linha=0 ; linha<3 ; linha++){
 			for(int coluna=0 ; coluna<3 ; coluna++){
 				tabuleiro[linha][coluna]='.';
@@ -61,7 +63,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	@Override
 	public int registraJogador(String nome) throws RemoteException {
 		int id = idJogador;
-		if(jogadores.size()>=2){
+		if(jogadores.size()>=500){
 			return -2;//numero maximo de jogadores atingidos
 		}
 		for(int i = 0; i<jogadores.size(); i++){
@@ -71,9 +73,11 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 		}
 		Jogador j = new Jogador(nome,id,0,0);
 		jogadores.add(j);
-		Jogo jog = new Jogo(j/*1, j, 0*/);
+		char[][] tab = tabuleiro;
+		Jogo jog = new Jogo(j,tab);
 		jogos.add(jog);
 		idJogador++;
+		contTemBuscaJog = System.currentTimeMillis();
 		return id;
 	}
 
@@ -89,7 +93,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 			}		
 		}
 		
-		return -1;//erro
+		return 0;
 	}
 
 	@Override
@@ -153,10 +157,10 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 			if(jogos.get(i).j.id==id && jogos.get(i).numParticipantes !=2){
 				return -2; //ainda nao tem 2 jogadores
 			}
-			if(jogos.get(i).j.id==id && venceu()!=0 && venceu()==jogos.get(i).j.numJogador){
+			if(jogos.get(i).j.id==id && venceu(id)!=0 && venceu(id)==jogos.get(i).j.numJogador){
 				return 2; //eh o vencedor
 			}
-			if(jogos.get(i).j.id==id && venceu()!=0 && venceu()!=jogos.get(i).j.numJogador){
+			if(jogos.get(i).j.id==id && venceu(id)!=0 && venceu(id)!=jogos.get(i).j.numJogador){
 				return 3; //eh o perdedor
 			}
 			if(jogos.get(i).j.id == id && tempo1 == 0){ //placeholder
@@ -178,40 +182,73 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 
 	@Override
 	public String obtemTabuleiro(int id) throws RemoteException {
+		for(int i = 0; i<jogos.size(); i++){
+			if(jogos.get(i).j.id==id){
+				String tab = "";
+		        for(int linha=0 ; linha<3 ; linha++){
+		        
+		            for(int coluna=0 ; coluna<3 ; coluna++){
+		                
+		                if(jogos.get(i).tabuleiro[linha][coluna]== '.'){
+		                    tab += " . ";
+		                }
+		                if(jogos.get(i).tabuleiro[linha][coluna]=='c'){
+		                    tab += " c ";
+		                }
+		                if(jogos.get(i).tabuleiro[linha][coluna]=='C'){
+		                    tab += " C ";
+		                }
+		                if(jogos.get(i).tabuleiro[linha][coluna]=='e'){
+		                    tab += " e ";
+		                }
+		                if(jogos.get(i).tabuleiro[linha][coluna]=='E'){
+		                    tab += " E ";
+		                }
+		                
+		                if(coluna==0 || coluna==1)
+		                    tab += "|";
+		            }
+		            tab += "\n";
+		        }
+				return tab;
+			}
+		}
 		
-		String tab = "";
-        for(int linha=0 ; linha<3 ; linha++){
-        
-            for(int coluna=0 ; coluna<3 ; coluna++){
-                
-                if(tabuleiro[linha][coluna]== '.'){
-                    tab += " . ";
-                }
-                if(tabuleiro[linha][coluna]=='c'){
-                    tab += " c ";
-                }
-                if(tabuleiro[linha][coluna]=='C'){
-                    tab += " C ";
-                }
-                if(tabuleiro[linha][coluna]=='e'){
-                    tab += " e ";
-                }
-                if(tabuleiro[linha][coluna]=='E'){
-                    tab += " E ";
-                }
-                
-                if(coluna==0 || coluna==1)
-                    tab += "|";
-            }
-            tab += "\n";
-        }
-		return tab;
+			return "";//erro
+		
+//		String tab = "";
+//        for(int linha=0 ; linha<3 ; linha++){
+//        
+//            for(int coluna=0 ; coluna<3 ; coluna++){
+//                
+//                if(tabuleiro[linha][coluna]== '.'){
+//                    tab += " . ";
+//                }
+//                if(tabuleiro[linha][coluna]=='c'){
+//                    tab += " c ";
+//                }
+//                if(tabuleiro[linha][coluna]=='C'){
+//                    tab += " C ";
+//                }
+//                if(tabuleiro[linha][coluna]=='e'){
+//                    tab += " e ";
+//                }
+//                if(tabuleiro[linha][coluna]=='E'){
+//                    tab += " E ";
+//                }
+//                
+//                if(coluna==0 || coluna==1)
+//                    tab += "|";
+//            }
+//            tab += "\n";
+//        }
+//		return tab;
 	}
 
 	@Override
 	public int posicionaPeca(int id, int pos, int orientacao) throws RemoteException {
 		int vez = ehMinhaVez(id);
-		if(vez == 1 && !tabuleiroCheio()){
+		if(vez == 1 && !tabuleiroCheio(id)){
 			for(int i = 0; i<jogos.size(); i++){
 				if(jogos.get(i).j.id == id && jogos.get(i).numParticipantes!=2){
 					return -2;//ainda nao tem dois jogadores na partida
@@ -220,8 +257,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					//caso seja o jogador 1(claras)
 					if(jogos.get(i).j.numJogador == 1){
 						if(pos == 0 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
-							if(tabuleiro[0][0] == '.'){
-								tabuleiro[0][0] = 'C';
+							if(jogos.get(i).tabuleiro[0][0] == '.'){
+								jogos.get(i).tabuleiro[0][0] = 'C';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -234,8 +271,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 0 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
-							if(tabuleiro[0][0] == '.'){
-								tabuleiro[0][0] = 'c';
+							if(jogos.get(i).tabuleiro[0][0] == '.'){
+								jogos.get(i).tabuleiro[0][0] = 'c';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -248,8 +285,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 1 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
-							if(tabuleiro[0][1] == '.'){
-								tabuleiro[0][1] = 'C';
+							if(jogos.get(i).tabuleiro[0][1] == '.'){
+								jogos.get(i).tabuleiro[0][1] = 'C';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -262,8 +299,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 1 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
-							if(tabuleiro[0][1] == '.'){
-								tabuleiro[0][1] = 'c';
+							if(jogos.get(i).tabuleiro[0][1] == '.'){
+								jogos.get(i).tabuleiro[0][1] = 'c';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -276,8 +313,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 2 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
-							if(tabuleiro[0][2] == '.'){
-								tabuleiro[0][2] = 'C';
+							if(jogos.get(i).tabuleiro[0][2] == '.'){
+								jogos.get(i).tabuleiro[0][2] = 'C';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -290,8 +327,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 2 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
-							if(tabuleiro[0][2] == '.'){
-								tabuleiro[0][2] = 'c';
+							if(jogos.get(i).tabuleiro[0][2] == '.'){
+								jogos.get(i).tabuleiro[0][2] = 'c';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -304,8 +341,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 3 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
-							if(tabuleiro[1][0] == '.'){
-								tabuleiro[1][0] = 'C';
+							if(jogos.get(i).tabuleiro[1][0] == '.'){
+								jogos.get(i).tabuleiro[1][0] = 'C';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -318,8 +355,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 3 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
-							if(tabuleiro[1][0] == '.'){
-								tabuleiro[1][0] = 'c';
+							if(jogos.get(i).tabuleiro[1][0] == '.'){
+								jogos.get(i).tabuleiro[1][0] = 'c';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -332,8 +369,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 4 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
-							if(tabuleiro[1][1] == '.'){
-								tabuleiro[1][1] = 'C';
+							if(jogos.get(i).tabuleiro[1][1] == '.'){
+								jogos.get(i).tabuleiro[1][1] = 'C';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -346,8 +383,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 4 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
-							if(tabuleiro[1][1] == '.'){
-								tabuleiro[1][1] = 'c';
+							if(jogos.get(i).tabuleiro[1][1] == '.'){
+								jogos.get(i).tabuleiro[1][1] = 'c';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -360,8 +397,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 5 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
-							if(tabuleiro[1][2] == '.'){
-								tabuleiro[1][2] = 'C';
+							if(jogos.get(i).tabuleiro[1][2] == '.'){
+								jogos.get(i).tabuleiro[1][2] = 'C';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -374,8 +411,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 5 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
-							if(tabuleiro[1][2] == '.'){
-								tabuleiro[1][2] = 'c';
+							if(jogos.get(i).tabuleiro[1][2] == '.'){
+								jogos.get(i).tabuleiro[1][2] = 'c';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -388,8 +425,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 6 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
-							if(tabuleiro[2][0] == '.'){
-								tabuleiro[2][0] = 'C';
+							if(jogos.get(i).tabuleiro[2][0] == '.'){
+								jogos.get(i).tabuleiro[2][0] = 'C';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -402,8 +439,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 6 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
-							if(tabuleiro[2][0] == '.'){
-								tabuleiro[2][0] = 'c';
+							if(jogos.get(i).tabuleiro[2][0] == '.'){
+								jogos.get(i).tabuleiro[2][0] = 'c';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -416,8 +453,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 7 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
-							if(tabuleiro[2][1] == '.'){
-								tabuleiro[2][1] = 'C';
+							if(jogos.get(i).tabuleiro[2][1] == '.'){
+								jogos.get(i).tabuleiro[2][1] = 'C';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -430,8 +467,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 7 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
-							if(tabuleiro[2][1] == '.'){
-								tabuleiro[2][1] = 'c';
+							if(jogos.get(i).tabuleiro[2][1] == '.'){
+								jogos.get(i).tabuleiro[2][1] = 'c';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -444,8 +481,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 8 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh C
-							if(tabuleiro[2][2] == '.'){
-								tabuleiro[2][2] = 'C';
+							if(jogos.get(i).tabuleiro[2][2] == '.'){
+								jogos.get(i).tabuleiro[2][2] = 'C';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -458,8 +495,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 8 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh c
-							if(tabuleiro[2][2] == '.'){
-								tabuleiro[2][2] = 'c';
+							if(jogos.get(i).tabuleiro[2][2] == '.'){
+								jogos.get(i).tabuleiro[2][2] = 'c';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -476,8 +513,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					//caso seja o jogador 2(escuras)
 					if(jogos.get(i).j.numJogador == 2){
 						if(pos == 0 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
-							if(tabuleiro[0][0] == '.'){
-								tabuleiro[0][0] = 'E';
+							if(jogos.get(i).tabuleiro[0][0] == '.'){
+								jogos.get(i).tabuleiro[0][0] = 'E';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -490,8 +527,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 0 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
-							if(tabuleiro[0][0] == '.'){
-								tabuleiro[0][0] = 'e';
+							if(jogos.get(i).tabuleiro[0][0] == '.'){
+								jogos.get(i).tabuleiro[0][0] = 'e';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -504,8 +541,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 1 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
-							if(tabuleiro[0][1] == '.'){
-								tabuleiro[0][1] = 'E';
+							if(jogos.get(i).tabuleiro[0][1] == '.'){
+								jogos.get(i).tabuleiro[0][1] = 'E';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -518,8 +555,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 1 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
-							if(tabuleiro[0][1] == '.'){
-								tabuleiro[0][1] = 'e';
+							if(jogos.get(i).tabuleiro[0][1] == '.'){
+								jogos.get(i).tabuleiro[0][1] = 'e';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -532,8 +569,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 2 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
-							if(tabuleiro[0][2] == '.'){
-								tabuleiro[0][2] = 'E';
+							if(jogos.get(i).tabuleiro[0][2] == '.'){
+								jogos.get(i).tabuleiro[0][2] = 'E';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -546,8 +583,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 2 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
-							if(tabuleiro[0][2] == '.'){
-								tabuleiro[0][2] = 'e';
+							if(jogos.get(i).tabuleiro[0][2] == '.'){
+								jogos.get(i).tabuleiro[0][2] = 'e';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -560,8 +597,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 3 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
-							if(tabuleiro[1][0] == '.'){
-								tabuleiro[1][0] = 'E';
+							if(jogos.get(i).tabuleiro[1][0] == '.'){
+								jogos.get(i).tabuleiro[1][0] = 'E';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -574,8 +611,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 3 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
-							if(tabuleiro[1][0] == '.'){
-								tabuleiro[1][0] = 'e';
+							if(jogos.get(i).tabuleiro[1][0] == '.'){
+								jogos.get(i).tabuleiro[1][0] = 'e';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -588,8 +625,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 4 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
-							if(tabuleiro[1][1] == '.'){
-								tabuleiro[1][1] = 'E';
+							if(jogos.get(i).tabuleiro[1][1] == '.'){
+								jogos.get(i).tabuleiro[1][1] = 'E';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -602,8 +639,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 4 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
-							if(tabuleiro[1][1] == '.'){
-								tabuleiro[1][1] = 'e';
+							if(jogos.get(i).tabuleiro[1][1] == '.'){
+								jogos.get(i).tabuleiro[1][1] = 'e';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -616,8 +653,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 5 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
-							if(tabuleiro[1][2] == '.'){
-								tabuleiro[1][2] = 'E';
+							if(jogos.get(i).tabuleiro[1][2] == '.'){
+								jogos.get(i).tabuleiro[1][2] = 'E';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -630,8 +667,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 5 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
-							if(tabuleiro[1][2] == '.'){
-								tabuleiro[1][2] = 'e';
+							if(jogos.get(i).tabuleiro[1][2] == '.'){
+								jogos.get(i).tabuleiro[1][2] = 'e';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -644,8 +681,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 6 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
-							if(tabuleiro[2][0] == '.'){
-								tabuleiro[2][0] = 'E';
+							if(jogos.get(i).tabuleiro[2][0] == '.'){
+								jogos.get(i).tabuleiro[2][0] = 'E';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -658,8 +695,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 6 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
-							if(tabuleiro[2][0] == '.'){
-								tabuleiro[2][0] = 'e';
+							if(jogos.get(i).tabuleiro[2][0] == '.'){
+								jogos.get(i).tabuleiro[2][0] = 'e';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -672,8 +709,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 7 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
-							if(tabuleiro[2][1] == '.'){
-								tabuleiro[2][1] = 'E';
+							if(jogos.get(i).tabuleiro[2][1] == '.'){
+								jogos.get(i).tabuleiro[2][1] = 'E';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -686,8 +723,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 7 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
-							if(tabuleiro[2][1] == '.'){
-								tabuleiro[2][1] = 'e';
+							if(jogos.get(i).tabuleiro[2][1] == '.'){
+								jogos.get(i).tabuleiro[2][1] = 'e';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -700,8 +737,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 8 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
-							if(tabuleiro[2][2] == '.'){
-								tabuleiro[2][2] = 'E';
+							if(jogos.get(i).jogos.get(i).tabuleiro[2][2] == '.'){
+								jogos.get(i).tabuleiro[2][2] = 'E';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -714,8 +751,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 8 && orientacao == 1){ //orientacao = 1 eh diagonal, que eh e
-							if(tabuleiro[2][2] == '.'){
-								tabuleiro[2][2] = 'e';
+							if(jogos.get(i).tabuleiro[2][2] == '.'){
+								jogos.get(i).tabuleiro[2][2] = 'e';
 								jogos.get(i).j.vez = 0;
 								for(int l = 0; l<jogos.size(); l++){
 									if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -736,7 +773,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 		if(vez==0){
 			return -3;//nao eh a sua vez
 		}
-		if(tabuleiroCheio()){
+		if(tabuleiroCheio(id)){
 			return -4;//nao tem mais posicoes livres disponiveis
 		}
 		
@@ -750,7 +787,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 		if(vez != 1){
 			return -3;//nao eh a vez do jogador
 		}
-		if(!tabuleiroCheio()){
+		if(!tabuleiroCheio(id)){
 			return -4; //tabuleiro nao esta cheio
 		}
 		
@@ -762,9 +799,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 				//claras
 				if(jogos.get(i).j.numJogador == 1){
 					//posAtual 0 movimento perpendicular
-					if(posAtual == 0 && tabuleiro[0][0] == 'C'  ){
+					if(posAtual == 0 && jogos.get(i).tabuleiro[0][0] == 'C'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[0][0] = 'c';//diagonal
+							jogos.get(i).tabuleiro[0][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -773,9 +810,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[0][1] = 'C';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -784,9 +821,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[0][1] = 'c';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -795,9 +832,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[0][2] = 'C';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -806,9 +843,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[0][2] = 'c';//diagonal
+						if( sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -817,9 +854,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[1][0] = 'C';//perpendicular
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -828,9 +865,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[1][0] = 'c';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -839,9 +876,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[2][0] = 'C';//perpendicular
+						if(sentidoDesl == 7 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -850,9 +887,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[2][0] = 'c';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -865,10 +902,10 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 0 movimento diagonal
-					if(posAtual == 0 && tabuleiro[0][0] == 'c'  ){
+					if(posAtual == 0 && jogos.get(i).tabuleiro[0][0] == 'c'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[0][0] = '.';
-							tabuleiro[0][0] = 'C';//perpendicular
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -877,9 +914,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[1][1] = 'C';//perpendicular
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -888,9 +925,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[1][1] = 'c';//diagonal
+						if( sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -899,9 +936,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 8  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[2][2] = 'C';//perpendicular
+						if( sentidoDesl == 8  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -910,9 +947,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 8  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[2][2] = 'c';//diagonal
+						if( sentidoDesl == 8  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -925,9 +962,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 1 movimento perpendicular
-					if(posAtual == 1 && tabuleiro[0][1] == 'C'  ){
+					if(posAtual == 1 && jogos.get(i).tabuleiro[0][1] == 'C'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[0][1] = 'c';//diagonal
+							jogos.get(i).tabuleiro[0][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -936,9 +973,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[0][2] = 'C';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -947,9 +984,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[0][2] = 'c';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -958,9 +995,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[0][0] = 'C';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -969,9 +1006,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[0][0] = 'c';//perpendicular
+						if(sentidoDesl == 3   && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'c';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -980,9 +1017,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][1] = 'C';//perpendicular
+						if( sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -991,9 +1028,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][1] = 'c';//diagonal
+						if( sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1002,9 +1039,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[2][1] = 'C';//perpendicular
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1013,9 +1050,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[2][1] = 'c';//diagonal
+						if( sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1028,9 +1065,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 1 movimento diagonal
-					if(posAtual == 1 && tabuleiro[0][1] == 'c'  ){
+					if(posAtual == 1 && jogos.get(i).tabuleiro[0][1] == 'c'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[0][1] = 'C';//perpendicular
+							jogos.get(i).tabuleiro[0][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1039,9 +1076,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 6   && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][0] = 'C';//perpendicular
+						if(sentidoDesl == 6   && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1050,9 +1087,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][0] = 'c';//diagonal
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1061,9 +1098,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][2] = 'C';//perpendicular
+						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1072,9 +1109,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][2] = 'c';//diagonal
+						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1087,9 +1124,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 2 movimento perpendicular
-					if(posAtual == 2 && tabuleiro[0][2] == 'C'  ){
+					if(posAtual == 2 && jogos.get(i).tabuleiro[0][2] == 'C'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[0][2] = 'c';//diagonal
+							jogos.get(i).tabuleiro[0][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1098,9 +1135,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[0][1] = 'C';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1109,9 +1146,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[0][1] = 'c';//diagonal
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1120,9 +1157,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[0][0] = 'C';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1131,9 +1168,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[0][0] = 'c';//diagonal
+						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1142,9 +1179,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[1][2] = 'C';//perpendicular
+						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1153,9 +1190,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[1][2] = 'c';//diagonal
+						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1164,9 +1201,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[2][2] = 'C';//perpendicular
+						if(sentidoDesl == 7 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1175,9 +1212,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[2][2] = 'c';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1190,9 +1227,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 2 movimento diagonal
-					if(posAtual == 2 && tabuleiro[0][2] == 'c'  ){
+					if(posAtual == 2 && jogos.get(i).tabuleiro[0][2] == 'c'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[0][2] = 'C';//perpendicular
+							jogos.get(i).tabuleiro[0][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1201,9 +1238,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[1][1] = 'C';//perpendicular
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1212,9 +1249,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[1][1] = 'c';//diagonal
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1223,9 +1260,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[2][0] = 'C';//perpendicular
+						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1234,9 +1271,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[2][0] = 'c';//diagonal
+						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1249,9 +1286,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 3 movimento perpendicular
-					if(posAtual == 3 && tabuleiro[1][0] == 'C'  ){
+					if(posAtual == 3 && jogos.get(i).tabuleiro[1][0] == 'C'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[1][0] = 'c';//diagonal
+							jogos.get(i).tabuleiro[1][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1260,9 +1297,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[2][0] = 'C';//perpendicular
+						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1271,9 +1308,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[2][0] = 'c';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1282,9 +1319,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[0][0] = 'C';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1293,9 +1330,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[0][0] = 'c';//diagonal
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1304,9 +1341,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[1][1] = 'C';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1315,9 +1352,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[1][1] = 'c';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1326,9 +1363,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[1][2] = 'C';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1337,9 +1374,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[1][2] = 'c';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1352,9 +1389,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 3 movimento diagonal
-					if(posAtual == 3 && tabuleiro[1][0] == 'c'  ){
+					if(posAtual == 3 && jogos.get(i).tabuleiro[1][0] == 'c'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[1][0] = 'C';//perpendicular
+							jogos.get(i).tabuleiro[1][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1363,9 +1400,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[0][1] = 'C';//perpendicular
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1374,9 +1411,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[0][1] = 'c';//diagonal
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1385,9 +1422,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[2][1] = 'C';//perpendicular
+						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1396,9 +1433,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[2][1] = 'c';//diagonal
+						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1411,9 +1448,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtul 4 movimento perpendicular
-					if(posAtual == 4 && tabuleiro[1][1] == 'C'  ){
+					if(posAtual == 4 && jogos.get(i).tabuleiro[1][1] == 'C'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[1][1] = 'c';//diagonal
+							jogos.get(i).tabuleiro[1][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1422,9 +1459,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][1] = 'C';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1433,9 +1470,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][1] = 'c';//diagonal
+						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1444,9 +1481,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][1] = 'C';//perpendicular
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1455,9 +1492,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][1] = 'c';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1466,9 +1503,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[1][0] = 'C';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1477,9 +1514,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[1][0] = 'c';//diagonal
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1488,9 +1525,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[1][2] = 'C';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1499,9 +1536,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[1][2] = 'c';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1513,9 +1550,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							return 0;
 						}	
 					}
-					if(posAtual == 4 && tabuleiro[1][1] == 'c'  ){
+					if(posAtual == 4 && jogos.get(i).tabuleiro[1][1] == 'c'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[1][1] = 'C';//perpendicular
+							jogos.get(i).tabuleiro[1][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1524,9 +1561,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][2] = 'C';//perpendicular
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1535,9 +1572,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][2] = 'c';//diagonal
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1546,9 +1583,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][0] = 'C';//perpendicular
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1557,9 +1594,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][0] = 'c';//diagonal
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1568,9 +1605,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}						
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][0] = 'C';//perpendicular
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1579,9 +1616,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][0] = 'c';//diagonal
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1590,9 +1627,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][2] = 'C';//perpendicular
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1601,9 +1638,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][2] = 'c';//diagonal
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1616,9 +1653,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 5 movimento perpendicular
-					if(posAtual == 5 && tabuleiro[1][2] == 'C'  ){
+					if(posAtual == 5 && jogos.get(i).tabuleiro[1][2] == 'C'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[1][2] = 'c';//diagonal
+							jogos.get(i).tabuleiro[1][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1627,9 +1664,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[1][1] = 'C';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1638,9 +1675,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[1][1] = 'c';//diagonal
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1649,9 +1686,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[1][0] = 'C';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1660,9 +1697,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[1][0] = 'c';//diagonal
+						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1671,9 +1708,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[2][2] = 'C';//perpendicular
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1682,9 +1719,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[2][2] = 'c';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1693,9 +1730,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[0][2] = 'C';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1704,9 +1741,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[0][2] = 'c';//diagonal
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1719,9 +1756,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 5 movimento diagonal
-					if(posAtual == 5 && tabuleiro[1][2] == 'c'  ){
+					if(posAtual == 5 && jogos.get(i).tabuleiro[1][2] == 'c'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[1][2] = 'C';//perpendicular
+							jogos.get(i).tabuleiro[1][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1730,9 +1767,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[0][1] = 'C';//perpendicular
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1741,9 +1778,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[0][1] = 'c';//diagonal
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1752,9 +1789,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[2][1] = 'C';//perpendicular
+						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1763,9 +1800,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[2][1] = 'c';//diagonal
+						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1778,9 +1815,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 6 movimento perpendicular
-					if(posAtual == 6 && tabuleiro[2][0] == 'C'  ){
+					if(posAtual == 6 && jogos.get(i).tabuleiro[2][0] == 'C'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[2][0] = 'c';//diagonal
+							jogos.get(i).tabuleiro[2][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1789,9 +1826,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[2][1] = 'C';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1800,9 +1837,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[2][1] = 'c';//diagonal
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1811,9 +1848,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[2][2] = 'C';//perpendicular
+						if(sentidoDesl == 5 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1822,9 +1859,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5 && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[2][2] = 'c';//diagonal
+						if(sentidoDesl == 5 && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1833,9 +1870,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[1][0] = 'C';//perpendicular
+						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1844,9 +1881,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[1][0] = 'c';//diagonal
+						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1855,9 +1892,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[0][0] = 'C';//perpendicular
+						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1866,9 +1903,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[0][0] = 'c';//diagonal
+						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1881,9 +1918,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual movimento diagonal
-					if(posAtual == 6 && tabuleiro[2][0] == 'c'  ){
+					if(posAtual == 6 && jogos.get(i).tabuleiro[2][0] == 'c'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[2][0] = 'C';//perpendicular
+							jogos.get(i).tabuleiro[2][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1892,9 +1929,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[1][1] = 'C';//perpendicular
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1903,9 +1940,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[1][1] = 'c';//diagonal
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1914,9 +1951,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[0][2] = 'C';//perpendicular
+						if(sentidoDesl == 2  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1925,9 +1962,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[0][2] = 'c';//diagonal
+						if(sentidoDesl == 2  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1940,9 +1977,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 7 movimento perpendicular
-					if(posAtual == 7 && tabuleiro[2][1] == 'C'  ){
+					if(posAtual == 7 && jogos.get(i).tabuleiro[2][1] == 'C'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[2][1] = 'c';//diagonal
+							jogos.get(i).tabuleiro[2][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1951,9 +1988,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[2][2] = 'C';//perpendicular
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1962,9 +1999,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[2][2] = 'c';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1973,9 +2010,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[2][0] = 'C';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1984,9 +2021,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[2][0] = 'c';//perpendicular
+						if(sentidoDesl == 3   && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'c';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -1995,9 +2032,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][1] = 'C';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2006,9 +2043,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][1] = 'c';//diagonal
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2017,9 +2054,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[0][1] = 'C';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2028,9 +2065,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[0][1] = 'c';//diagonal
+						if(sentidoDesl == 1  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2043,9 +2080,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 7 movimento diagonal
-					if(posAtual == 7 && tabuleiro[0][1] == 'c'  ){
+					if(posAtual == 7 && jogos.get(i).tabuleiro[0][1] == 'c'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[2][1] = 'C';//perpendicular
+							jogos.get(i).tabuleiro[2][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2054,9 +2091,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][0] = 'C';//perpendicular
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2065,9 +2102,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][0] = 'c';//diagonal
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2076,9 +2113,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][2] = 'C';//perpendicular
+						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2087,9 +2124,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][2] = 'c';//diagonal
+						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2102,9 +2139,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 8 movimento perpendicular
-					if(posAtual == 8 && tabuleiro[2][2] == 'C'  ){
+					if(posAtual == 8 && jogos.get(i).tabuleiro[2][2] == 'C'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[2][2] = 'c';//diagonal
+							jogos.get(i).tabuleiro[2][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2113,9 +2150,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[2][1] = 'C';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2124,9 +2161,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[2][1] = 'c';//diagonal
+						if(sentidoDesl == 3 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2135,9 +2172,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[2][0] = 'C';//perpendicular
+						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2146,9 +2183,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[2][0] = 'c';//diagonal
+						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2157,9 +2194,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[1][2] = 'C';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2168,9 +2205,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[1][2] = 'c';//diagonal
+						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2179,9 +2216,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[0][2] = 'C';//perpendicular
+						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2190,9 +2227,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[0][2] = 'c';//diagonal
+						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2205,9 +2242,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 8 movimento diagonal
-					if(posAtual == 8 && tabuleiro[2][2] == 'c'  ){
+					if(posAtual == 8 && jogos.get(i).tabuleiro[2][2] == 'c'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[2][2] = 'C';//perpendicular
+							jogos.get(i).tabuleiro[2][2] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2216,9 +2253,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[1][1] = 'C';//perpendicular
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2227,9 +2264,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[1][1] = 'c';//diagonal
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2238,9 +2275,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[0][0] = 'C';//perpendicular
+						if(sentidoDesl == 0  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'C';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2249,9 +2286,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[0][0] = 'c';//diagonal
+						if(sentidoDesl == 0  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'c';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2267,9 +2304,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 				//ESCURAS
 				if(jogos.get(i).j.numJogador == 2){
 					//posAtual 0 movimento perpendicular
-					if(posAtual == 0 && tabuleiro[0][0] == 'E'  ){
+					if(posAtual == 0 && jogos.get(i).tabuleiro[0][0] == 'E'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[0][0] = 'e';//diagonal
+							jogos.get(i).tabuleiro[0][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2278,9 +2315,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[0][1] = 'E';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2289,9 +2326,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[0][1] = 'e';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2300,9 +2337,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[0][2] = 'E';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2311,9 +2348,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[0][2] = 'e';//diagonal
+						if( sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2322,9 +2359,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[1][0] = 'E';//perpendicular
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2333,9 +2370,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[1][0] = 'e';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2344,9 +2381,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[2][0] = 'E';//perpendicular
+						if(sentidoDesl == 7 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2355,9 +2392,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[2][0] = 'e';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2370,10 +2407,10 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 0 movimento diagonal
-					if(posAtual == 0 && tabuleiro[0][0] == 'e'  ){
+					if(posAtual == 0 && jogos.get(i).tabuleiro[0][0] == 'e'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[0][0] = '.';
-							tabuleiro[0][0] = 'E';//perpendicular
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2382,9 +2419,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[1][1] = 'E';//perpendicular
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2393,9 +2430,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[1][1] = 'e';//diagonal
+						if( sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2404,9 +2441,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 8  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[2][2] = 'E';//perpendicular
+						if( sentidoDesl == 8  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2415,9 +2452,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 8  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[0][0] = '.';
-							tabuleiro[2][2] = 'e';//diagonal
+						if( sentidoDesl == 8  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[0][0] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2430,9 +2467,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 1 movimento perpendicular
-					if(posAtual == 1 && tabuleiro[0][1] == 'E'  ){
+					if(posAtual == 1 && jogos.get(i).tabuleiro[0][1] == 'E'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[0][1] = 'e';//diagonal
+							jogos.get(i).tabuleiro[0][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2441,9 +2478,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[0][2] = 'E';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2452,9 +2489,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[0][2] = 'e';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2463,9 +2500,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[0][0] = 'E';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2474,9 +2511,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[0][0] = 'e';//perpendicular
+						if(sentidoDesl == 3   && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'e';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2485,9 +2522,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][1] = 'E';//perpendicular
+						if( sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2496,9 +2533,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][1] = 'e';//diagonal
+						if( sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2507,9 +2544,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[2][1] = 'E';//perpendicular
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2518,9 +2555,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if( sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[2][1] = 'e';//diagonal
+						if( sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2533,9 +2570,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 1 movimento diagonal
-					if(posAtual == 1 && tabuleiro[0][1] == 'e'  ){
+					if(posAtual == 1 && jogos.get(i).tabuleiro[0][1] == 'e'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[0][1] = 'E';//perpendicular
+							jogos.get(i).tabuleiro[0][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2544,9 +2581,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 6   && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][0] = 'E';//perpendicular
+						if(sentidoDesl == 6   && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2555,9 +2592,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][0] = 'e';//diagonal
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2566,9 +2603,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][2] = 'E';//perpendicular
+						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2577,9 +2614,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[0][1] = '.';
-							tabuleiro[1][2] = 'e';//diagonal
+						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[0][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2592,9 +2629,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 2 movimento perpendicular
-					if(posAtual == 2 && tabuleiro[0][2] == 'E'  ){
+					if(posAtual == 2 && jogos.get(i).tabuleiro[0][2] == 'E'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[0][2] = 'e';//diagonal
+							jogos.get(i).tabuleiro[0][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2603,9 +2640,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[0][1] = 'E';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2614,9 +2651,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[0][1] = 'e';//diagonal
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2625,9 +2662,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[0][0] = 'E';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2636,9 +2673,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[0][0] = 'e';//diagonal
+						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2647,9 +2684,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[1][2] = 'E';//perpendicular
+						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2658,9 +2695,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[1][2] = 'e';//diagonal
+						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2669,9 +2706,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[2][2] = 'E';//perpendicular
+						if(sentidoDesl == 7 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2680,9 +2717,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[2][2] = 'e';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2695,9 +2732,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 2 movimento diagonal
-					if(posAtual == 2 && tabuleiro[0][2] == 'e'  ){
+					if(posAtual == 2 && jogos.get(i).tabuleiro[0][2] == 'e'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[0][2] = 'E';//perpendicular
+							jogos.get(i).tabuleiro[0][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2706,9 +2743,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[1][1] = 'E';//perpendicular
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2717,9 +2754,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[1][1] = 'e';//diagonal
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2728,9 +2765,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[2][0] = 'E';//perpendicular
+						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2739,9 +2776,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[0][2] = '.';
-							tabuleiro[2][0] = 'e';//diagonal
+						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[0][2] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2754,9 +2791,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 3 movimento perpendicular
-					if(posAtual == 3 && tabuleiro[1][0] == 'E'  ){
+					if(posAtual == 3 && jogos.get(i).tabuleiro[1][0] == 'E'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[1][0] = 'e';//diagonal
+							jogos.get(i).tabuleiro[1][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2765,9 +2802,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[2][0] = 'E';//perpendicular
+						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2776,9 +2813,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[2][0] = 'e';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2787,9 +2824,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[0][0] = 'E';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2798,9 +2835,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[0][0] = 'e';//diagonal
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2809,9 +2846,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[1][1] = 'E';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2820,9 +2857,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[1][1] = 'e';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2831,9 +2868,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[1][2] = 'E';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2842,9 +2879,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[1][2] = 'e';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2857,9 +2894,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 3 movimento diagonal
-					if(posAtual == 3 && tabuleiro[1][0] == 'e'  ){
+					if(posAtual == 3 && jogos.get(i).tabuleiro[1][0] == 'e'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[1][0] = 'E';//perpendicular
+							jogos.get(i).tabuleiro[1][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2868,9 +2905,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[0][1] = 'E';//perpendicular
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2879,9 +2916,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[0][1] = 'e';//diagonal
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2890,9 +2927,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[2][1] = 'E';//perpendicular
+						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2901,9 +2938,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][0] = '.';
-							tabuleiro[2][1] = 'e';//diagonal
+						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][0] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2916,9 +2953,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtul 4 movimento perpendicular
-					if(posAtual == 4 && tabuleiro[1][1] == 'E'  ){
+					if(posAtual == 4 && jogos.get(i).tabuleiro[1][1] == 'E'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[1][1] = 'e';//diagonal
+							jogos.get(i).tabuleiro[1][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2927,9 +2964,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][1] = 'E';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2938,9 +2975,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][1] = 'e';//diagonal
+						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2949,9 +2986,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][1] = 'E';//perpendicular
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2960,9 +2997,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][1] = 'e';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2971,9 +3008,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[1][0] = 'E';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2982,9 +3019,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[1][0] = 'e';//diagonal
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -2993,9 +3030,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[1][2] = 'E';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3004,9 +3041,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[1][2] = 'e';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3018,9 +3055,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							return 0;
 						}	
 					}
-					if(posAtual == 4 && tabuleiro[1][1] == 'e'  ){
+					if(posAtual == 4 && jogos.get(i).tabuleiro[1][1] == 'e'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[1][1] = 'E';//perpendicular
+							jogos.get(i).tabuleiro[1][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3029,9 +3066,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][2] = 'E';//perpendicular
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3040,9 +3077,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][2] = 'e';//diagonal
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3051,9 +3088,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][0] = 'E';//perpendicular
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3062,9 +3099,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[2][0] = 'e';//diagonal
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3073,9 +3110,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}						
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][0] = 'E';//perpendicular
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3084,9 +3121,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][0] = 'e';//diagonal
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3095,9 +3132,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][2] = 'E';//perpendicular
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3106,9 +3143,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[1][1] = '.';
-							tabuleiro[0][2] = 'e';//diagonal
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[1][1] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3121,9 +3158,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 5 movimento perpendicular
-					if(posAtual == 5 && tabuleiro[1][2] == 'E'  ){
+					if(posAtual == 5 && jogos.get(i).tabuleiro[1][2] == 'E'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[1][2] = 'e';//diagonal
+							jogos.get(i).tabuleiro[1][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3132,9 +3169,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[1][1] = 'E';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3143,9 +3180,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[1][1] = 'e';//diagonal
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3154,9 +3191,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[1][0] = 'E';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3165,9 +3202,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[1][0] = 'e';//diagonal
+						if(sentidoDesl == 3  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3176,9 +3213,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[2][2] = 'E';//perpendicular
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3187,9 +3224,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[2][2] = 'e';//diagonal
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3198,9 +3235,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[0][2] = 'E';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3209,9 +3246,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[0][2] = 'e';//diagonal
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3224,9 +3261,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 5 movimento diagonal
-					if(posAtual == 5 && tabuleiro[1][2] == 'e'  ){
+					if(posAtual == 5 && jogos.get(i).tabuleiro[1][2] == 'e'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[1][2] = 'E';//perpendicular
+							jogos.get(i).tabuleiro[1][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3235,9 +3272,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[0][1] = 'E';//perpendicular
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3246,9 +3283,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[0][1] = 'e';//diagonal
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3257,9 +3294,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[2][1] = 'E';//perpendicular
+						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3268,9 +3305,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[1][2] = '.';
-							tabuleiro[2][1] = 'e';//diagonal
+						if(sentidoDesl == 6  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[1][2] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3283,9 +3320,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 6 movimento perpendicular
-					if(posAtual == 6 && tabuleiro[2][0] == 'E'  ){
+					if(posAtual == 6 && jogos.get(i).tabuleiro[2][0] == 'E'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[2][0] = 'e';//diagonal
+							jogos.get(i).tabuleiro[2][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3294,9 +3331,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[2][1] = 'E';//perpendicular
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3305,9 +3342,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[2][1] = 'e';//diagonal
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3316,9 +3353,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[2][2] = 'E';//perpendicular
+						if(sentidoDesl == 5 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3327,9 +3364,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5 && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[2][2] = 'e';//diagonal
+						if(sentidoDesl == 5 && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3338,9 +3375,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[1][0] = 'E';//perpendicular
+						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3349,9 +3386,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[1][0] = 'e';//diagonal
+						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3360,9 +3397,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[0][0] = 'E';//perpendicular
+						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3371,9 +3408,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[0][0] = 'e';//diagonal
+						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3386,9 +3423,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual movimento diagonal
-					if(posAtual == 6 && tabuleiro[2][0] == 'e'  ){
+					if(posAtual == 6 && jogos.get(i).tabuleiro[2][0] == 'e'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[2][0] = 'E';//perpendicular
+							jogos.get(i).tabuleiro[2][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3397,9 +3434,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[1][1] = 'E';//perpendicular
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3408,9 +3445,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[1][1] = 'e';//diagonal
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3419,9 +3456,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[0][2] = 'E';//perpendicular
+						if(sentidoDesl == 2  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3430,9 +3467,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[2][0] = '.';
-							tabuleiro[0][2] = 'e';//diagonal
+						if(sentidoDesl == 2  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[2][0] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3445,9 +3482,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 7 movimento perpendicular
-					if(posAtual == 7 && tabuleiro[2][1] == 'E'  ){
+					if(posAtual == 7 && jogos.get(i).tabuleiro[2][1] == 'E'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[2][1] = 'e';//diagonal
+							jogos.get(i).tabuleiro[2][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3456,9 +3493,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[2][2] = 'E';//perpendicular
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3467,9 +3504,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[2][2] = 'e';//diagonal
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][2] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[2][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3478,9 +3515,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[2][0] = 'E';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3489,9 +3526,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[2][0] = 'e';//perpendicular
+						if(sentidoDesl == 3   && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'e';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3500,9 +3537,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][1] = 'E';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3511,9 +3548,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][1] = 'e';//diagonal
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3522,9 +3559,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][1] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[0][1] = 'E';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3533,9 +3570,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][1] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[0][1] = 'e';//diagonal
+						if(sentidoDesl == 1  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[0][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3548,9 +3585,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 7 movimento diagonal
-					if(posAtual == 7 && tabuleiro[0][1] == 'e'  ){
+					if(posAtual == 7 && jogos.get(i).tabuleiro[0][1] == 'e'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[2][1] = 'E';//perpendicular
+							jogos.get(i).tabuleiro[2][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3559,9 +3596,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][0] = 'E';//perpendicular
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3570,9 +3607,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][0] = 'e';//diagonal
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][0] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3581,9 +3618,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][2] = 'E';//perpendicular
+						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3592,9 +3629,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[2][1] = '.';
-							tabuleiro[1][2] = 'e';//diagonal
+						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[2][1] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3607,9 +3644,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 8 movimento perpendicular
-					if(posAtual == 8 && tabuleiro[2][2] == 'E'  ){
+					if(posAtual == 8 && jogos.get(i).tabuleiro[2][2] == 'E'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
-							tabuleiro[2][2] = 'e';//diagonal
+							jogos.get(i).tabuleiro[2][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3618,9 +3655,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[2][1] = 'E';//perpendicular
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3629,9 +3666,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[2][1] = 'e';//diagonal
+						if(sentidoDesl == 3 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[2][1] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[2][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3640,9 +3677,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[2][0] = 'E';//perpendicular
+						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3651,9 +3688,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[2][0] = 'e';//diagonal
+						if(sentidoDesl == 3 && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[2][0] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[2][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3662,9 +3699,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[1][2] = 'E';//perpendicular
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3673,9 +3710,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[1][2] = 'e';//diagonal
+						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][2] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[1][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3684,9 +3721,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[0][2] = 'E';//perpendicular
+						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3695,9 +3732,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[0][2] = 'e';//diagonal
+						if(sentidoDesl == 1 && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][2] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[0][2] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3710,9 +3747,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						}	
 					}
 					//posAtual 8 movimento diagonal
-					if(posAtual == 8 && tabuleiro[2][2] == 'e'  ){
+					if(posAtual == 8 && jogos.get(i).tabuleiro[2][2] == 'e'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 0){
-							tabuleiro[2][2] = 'E';//perpendicular
+							jogos.get(i).tabuleiro[2][2] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3721,9 +3758,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1; //tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[1][1] = 'E';//perpendicular
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3732,9 +3769,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[1][1] = 'e';//diagonal
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[1][1] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[1][1] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3743,9 +3780,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[0][0] = 'E';//perpendicular
+						if(sentidoDesl == 0  && casasDeslocadas == 2 && orientacao == 0 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'E';//perpendicular
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3754,9 +3791,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 							return 1;//tudo certo
 						}
-						if(sentidoDesl == 0  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
-							tabuleiro[2][2] = '.';
-							tabuleiro[0][0] = 'e';//diagonal
+						if(sentidoDesl == 0  && casasDeslocadas == 2 && orientacao == 1 && jogos.get(i).tabuleiro[0][0] == '.'){
+							jogos.get(i).tabuleiro[2][2] = '.';
+							jogos.get(i).tabuleiro[0][0] = 'e';//diagonal
 							jogos.get(i).j.vez = 0;
 							for(int l = 0; l<jogos.size(); l++){
 								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
@@ -3779,9 +3816,15 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	@Override
 	public String obtemOponente(int id) throws RemoteException {
 		int idJog = idJogo;
+		long tempoPassado = System.currentTimeMillis() - contTemBuscaJog;
+		long segundos = tempoPassado /1000;
+		System.out.println(segundos);
+		if(segundos>=120){
+			return "Tempo Esgotado";	
+		}
 		String n = "";
 		for(int i = 0; i<jogos.size(); i++){
-			System.out.println(jogos.get(i).j.id);
+			System.out.println("IdJogador:" + jogos.get(i).j.id);
 			if(jogos.get(i).j.id == id && jogos.get(i).numParticipantes !=2){
 				for(int l = 0; l<jogos.size(); l++){
 					if(jogos.get(l).j.id != id && jogos.get(l).numParticipantes !=2){
@@ -3789,97 +3832,117 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						n = jogos.get(l).j.nome;
 						jogos.get(l).numParticipantes = 2;
 						jogos.get(l).idJogo = idJog;
-						System.out.println("Jogador l: "+jogos.get(l).idJogo);
+						System.out.println("IdJogo l: "+jogos.get(l).idJogo);
+						jogos.get(i).numParticipantes = 2;
+						jogos.get(i).idJogo = idJog;
+						System.out.println("IdJogo i: "+jogos.get(i).idJogo);
+						idJogo++;
+						return "Seu oponente: "+n;
 					}
 				}
-				jogos.get(i).numParticipantes = 2;
-				jogos.get(i).idJogo = idJog;
-				System.out.println("Jogador i: "+jogos.get(i).idJogo);
-				idJogo++;
-				return "Seu oponente: "+n;
+				
 			}
 		}
 		
 		return "";//erro
 	}
 	
-	public int verificaLinhas(){
-        for(int linha=0 ; linha<3 ; linha++){
-            if( (tabuleiro[linha][0] == 'c'||tabuleiro[linha][0] == 'C') && (tabuleiro[linha][1] == 'c' || tabuleiro[linha][1] == 'C') &&  (tabuleiro[linha][2] == 'c'||tabuleiro[linha][2] == 'C')){
-                return 1;//claras
-            }
-            if( (tabuleiro[linha][0] == 'e'||tabuleiro[linha][0] == 'E') && (tabuleiro[linha][1] == 'e' || tabuleiro[linha][1] == 'E') &&  (tabuleiro[linha][2] == 'E'||tabuleiro[linha][2] == 'E')){
-            	return 2;//escuras
-            }       
-        }
+	public int verificaLinhas(int id){
+		for(int i = 0; i < jogos.size(); i++){
+			if(jogos.get(i).j.id == id){
+				 for(int linha=0 ; linha<3 ; linha++){
+			            if( (jogos.get(i).tabuleiro[linha][0] == 'c'||jogos.get(i).tabuleiro[linha][0] == 'C') && (jogos.get(i).tabuleiro[linha][1] == 'c' || jogos.get(i).tabuleiro[linha][1] == 'C') &&  (jogos.get(i).tabuleiro[linha][2] == 'c'||jogos.get(i).tabuleiro[linha][2] == 'C')){
+			                return 1;//claras
+			            }
+			            if( (jogos.get(i).tabuleiro[linha][0] == 'e'||jogos.get(i).tabuleiro[linha][0] == 'E') && (jogos.get(i).tabuleiro[linha][1] == 'e' || jogos.get(i).tabuleiro[linha][1] == 'E') &&  (jogos.get(i).tabuleiro[linha][2] == 'E'||jogos.get(i).tabuleiro[linha][2] == 'E')){
+			            	return 2;//escuras
+			            }       
+			        }
+			}
+		}
+       
         
         return 0;//ninguem completou todas as linhas                
     }
 	
-	  public int verificaColunas(){
-	        for(int coluna=0 ; coluna<3 ; coluna++){
-	        	if( (tabuleiro[0][coluna] == 'c'||tabuleiro[0][coluna] == 'C') && (tabuleiro[1][coluna] == 'c' || tabuleiro[1][coluna] == 'C') &&  (tabuleiro[2][coluna] == 'c'||tabuleiro[2][coluna] == 'C')){
-	                return 1;//claras
-	            }
-	            if( (tabuleiro[0][coluna] == 'e'||tabuleiro[0][coluna] == 'E') && (tabuleiro[1][coluna] == 'e' || tabuleiro[1][coluna] == 'E') &&  (tabuleiro[2][coluna] == 'E'||tabuleiro[2][coluna] == 'E')){
-	            	return 2;//escuras
-	            }       
-	        }
+	  public int verificaColunas(int id){
+		  for(int i = 0; i < jogos.size(); i++){
+				if(jogos.get(i).j.id == id){
+					 for(int coluna=0 ; coluna<3 ; coluna++){
+				        	if( (jogos.get(i).tabuleiro[0][coluna] == 'c'||jogos.get(i).tabuleiro[0][coluna] == 'C') && (jogos.get(i).tabuleiro[1][coluna] == 'c' || jogos.get(i).tabuleiro[1][coluna] == 'C') &&  (jogos.get(i).tabuleiro[2][coluna] == 'c'||jogos.get(i).tabuleiro[2][coluna] == 'C')){
+				                return 1;//claras
+				            }
+				            if( (jogos.get(i).tabuleiro[0][coluna] == 'e'||jogos.get(i).tabuleiro[0][coluna] == 'E') && (jogos.get(i).tabuleiro[1][coluna] == 'e' || jogos.get(i).tabuleiro[1][coluna] == 'E') &&  (jogos.get(i).tabuleiro[2][coluna] == 'E'||jogos.get(i).tabuleiro[2][coluna] == 'E')){
+				            	return 2;//escuras
+				            }       
+				        }
+				}
+		  }
+	       
 	        return 0;          
 	 }
 	  
-	 public int verificaDiagonais(){
-		 if( (tabuleiro[0][0] == 'c'||tabuleiro[0][0] == 'C') && (tabuleiro[1][1] == 'c' || tabuleiro[1][1] == 'C') &&  (tabuleiro[2][2] == 'c'||tabuleiro[2][2] == 'C')){
-			 return 1;//claras
-		 }
-		 if( (tabuleiro[0][0] == 'e'||tabuleiro[0][0] == 'E') && (tabuleiro[1][1] == 'e' || tabuleiro[1][1] == 'E') &&  (tabuleiro[2][2] == 'e'||tabuleiro[2][2] == 'E')){
-			 return 2;//escuras
-		 }
-		 if( (tabuleiro[0][2] == 'c'||tabuleiro[0][0] == 'C') && (tabuleiro[1][1] == 'c' || tabuleiro[1][1] == 'C') &&  (tabuleiro[2][2] == 'c'||tabuleiro[2][0] == 'C')){
-			 return 1;//claras
-		 }
-		 if( (tabuleiro[0][2] == 'e'||tabuleiro[0][0] == 'E') && (tabuleiro[1][1] == 'e' || tabuleiro[1][1] == 'E') &&  (tabuleiro[2][2] == 'e'||tabuleiro[2][0] == 'E')){
-			 return 2;//escuras
+	 public int verificaDiagonais(int id){
+		 for(int i = 0; i < jogos.size(); i++){
+				if(jogos.get(i).j.id == id){
+					if( (jogos.get(i).tabuleiro[0][0] == 'c'||jogos.get(i).tabuleiro[0][0] == 'C') && (jogos.get(i).tabuleiro[1][1] == 'c' || jogos.get(i).tabuleiro[1][1] == 'C') &&  (jogos.get(i).tabuleiro[2][2] == 'c'||jogos.get(i).tabuleiro[2][2] == 'C')){
+						 return 1;//claras
+					 }
+					 if( (jogos.get(i).tabuleiro[0][0] == 'e'||jogos.get(i).tabuleiro[0][0] == 'E') && (jogos.get(i).tabuleiro[1][1] == 'e' || jogos.get(i).tabuleiro[1][1] == 'E') &&  (jogos.get(i).tabuleiro[2][2] == 'e'||jogos.get(i).tabuleiro[2][2] == 'E')){
+						 return 2;//escuras
+					 }
+					 if( (jogos.get(i).tabuleiro[0][2] == 'c'||jogos.get(i).tabuleiro[0][0] == 'C') && (jogos.get(i).tabuleiro[1][1] == 'c' || jogos.get(i).tabuleiro[1][1] == 'C') &&  (jogos.get(i).tabuleiro[2][2] == 'c'||jogos.get(i).tabuleiro[2][0] == 'C')){
+						 return 1;//claras
+					 }
+					 if( (jogos.get(i).tabuleiro[0][2] == 'e'||jogos.get(i).tabuleiro[0][0] == 'E') && (jogos.get(i).tabuleiro[1][1] == 'e' || jogos.get(i).tabuleiro[1][1] == 'E') &&  (jogos.get(i).tabuleiro[2][2] == 'e'||jogos.get(i).tabuleiro[2][0] == 'E')){
+						 return 2;//escuras
+					 }
+				}
 		 }
 		 
 		 return 0;
 	 }
 	
-	 public int venceu(){
-		 if(verificaLinhas() == 1){
+	 public int venceu(int id){
+		 if(verificaLinhas(id) == 1){
 			 return 1;//claras
 		 }
-		 if(verificaColunas() == 1){
+		 if(verificaColunas(id) == 1){
 			 return 1;//claras
 		 }
-		 if(verificaDiagonais() == 1){
+		 if(verificaDiagonais(id) == 1){
 			 return 1;//claras
 		 }
-		 if(verificaLinhas() == 2){
+		 if(verificaLinhas(id) == 2){
 			 return 2;//escuras
 		 }
-		 if(verificaColunas() == 2){
+		 if(verificaColunas(id) == 2){
 			 return 2;//escuras
 		 }
-		 if(verificaDiagonais() == 2){
+		 if(verificaDiagonais(id) == 2){
 			 return 2;//escuras
 		 }
 		 return 0;//ninguem venceu ainda
 	 }
 	 
-	 public boolean tabuleiroCheio(){
+	 public boolean tabuleiroCheio(int id){
 		 int cont = 0;
-	        for(int linha=0 ; linha<3 ; linha++){
-	        	for(int coluna=0 ; coluna<3 ; coluna++){
-	        		if( tabuleiro[linha][coluna]!='.' ){
-	        			 cont++;
-	        		}
-	        	}
-	        } 
-	        if(cont>=6){
-	        	return true;
-	        }
-	        return false;
+		 for(int i = 0; i < jogos.size(); i++){
+				if(jogos.get(i).j.id == id){
+					for(int linha=0 ; linha<3 ; linha++){
+			        	for(int coluna=0 ; coluna<3 ; coluna++){
+			        		if( jogos.get(i).tabuleiro[linha][coluna]!='.' ){
+			        			 cont++;
+			        		}
+			        	}
+			        } 
+				}
+		 }
+	        
+		 if(cont>=6){
+	       	return true;
+	     }
+		 return false;
 	 }
 
 }
