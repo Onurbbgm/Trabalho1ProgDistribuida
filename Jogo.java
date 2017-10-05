@@ -764,46 +764,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 0 && tabuleiro[0][0] == 'C'  ){
 						if(sentidoDesl == 0 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[0][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[0][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[0][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[0][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[0][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[1][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[1][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[2][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[2][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -813,26 +867,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(sentidoDesl == 0 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[0][0] = '.';
 							tabuleiro[0][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[1][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[1][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[2][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[2][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -841,46 +925,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 1 && tabuleiro[0][1] == 'C'  ){
 						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[0][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[0][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[0][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[0][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 0   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[0][0] = 'c';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[2][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[2][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -889,26 +1027,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 1 && tabuleiro[0][1] == 'c'  ){
 						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[0][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -917,46 +1085,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 2 && tabuleiro[0][2] == 'C'  ){
 						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[0][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[0][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[0][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[0][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[0][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[1][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[1][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[2][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[2][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -965,26 +1187,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 2 && tabuleiro[0][2] == 'c'  ){
 						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[0][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[1][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[1][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[2][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[2][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -993,46 +1245,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 3 && tabuleiro[1][0] == 'C'  ){
 						if(sentidoDesl == 3 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[1][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 6 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[2][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[2][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[0][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[0][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[1][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[1][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[1][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[1][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1041,26 +1347,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 3 && tabuleiro[1][0] == 'c'  ){
 						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[1][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[0][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[0][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[2][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[2][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1069,46 +1405,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 4 && tabuleiro[1][1] == 'C'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[1][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[1][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[1][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[1][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[1][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1117,46 +1507,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 4 && tabuleiro[1][1] == 'c'  ){
 						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[1][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}						
 						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1165,46 +1609,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 5 && tabuleiro[1][2] == 'C'  ){
 						if(sentidoDesl == 5 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[1][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[1][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[1][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[1][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[1][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[2][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[2][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[0][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[0][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1213,26 +1711,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 5 && tabuleiro[1][2] == 'c'  ){
 						if(sentidoDesl == 5 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[1][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[0][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[0][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[2][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[2][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1241,46 +1769,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 6 && tabuleiro[2][0] == 'C'  ){
 						if(sentidoDesl == 6 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[2][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[2][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[2][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[2][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[2][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[1][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[1][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[0][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[0][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1289,26 +1871,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 6 && tabuleiro[2][0] == 'c'  ){
 						if(sentidoDesl == 6 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[2][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[1][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[1][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[0][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[0][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1317,46 +1929,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 7 && tabuleiro[2][1] == 'C'  ){
 						if(sentidoDesl == 7 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[2][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[2][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[2][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[2][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 6   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[2][0] = 'c';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[0][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[0][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1365,26 +2031,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 7 && tabuleiro[0][1] == 'c'  ){
 						if(sentidoDesl == 7 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[2][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1393,46 +2089,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 8 && tabuleiro[2][2] == 'C'  ){
 						if(sentidoDesl == 8 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[2][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[2][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[2][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[2][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[2][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[1][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[1][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[0][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[0][2] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1441,26 +2191,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 8 && tabuleiro[2][2] == 'c'  ){
 						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[2][2] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[1][1] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[1][1] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[0][0] = 'C';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[0][0] = 'c';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1472,46 +2252,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 0 && tabuleiro[0][0] == 'E'  ){
 						if(sentidoDesl == 0 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[0][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[0][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[0][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[0][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[0][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[1][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[1][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[2][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[2][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1521,26 +2355,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(sentidoDesl == 0 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[0][0] = '.';
 							tabuleiro[0][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[1][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[1][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[2][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[0][0] = '.';
 							tabuleiro[2][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1549,46 +2413,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 1 && tabuleiro[0][1] == 'E'  ){
 						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[0][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[0][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[0][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[0][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 0   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[0][0] = 'e';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[2][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[2][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1597,26 +2515,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 1 && tabuleiro[0][1] == 'e'  ){
 						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[0][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[0][1] = '.';
 							tabuleiro[1][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1625,46 +2573,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 2 && tabuleiro[0][2] == 'E'  ){
 						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[0][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[0][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[0][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[0][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[0][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[1][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[1][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[2][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[2][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1673,26 +2675,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 2 && tabuleiro[0][2] == 'e'  ){
 						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[0][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[1][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[1][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[2][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[0][2] = '.';
 							tabuleiro[2][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1701,46 +2733,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 3 && tabuleiro[1][0] == 'E'  ){
 						if(sentidoDesl == 3 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[1][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 6 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[2][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[2][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[0][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[0][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[1][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[1][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[1][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[1][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1749,26 +2835,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 3 && tabuleiro[1][0] == 'e'  ){
 						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[1][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[0][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[0][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[2][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][0] = '.';
 							tabuleiro[2][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1777,46 +2893,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 4 && tabuleiro[1][1] == 'E'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[1][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[1][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[1][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[1][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[1][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1825,46 +2995,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 4 && tabuleiro[1][1] == 'e'  ){
 						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[1][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[2][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}						
 						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[1][1] = '.';
 							tabuleiro[0][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1873,46 +3097,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 5 && tabuleiro[1][2] == 'E'  ){
 						if(sentidoDesl == 5 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[1][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[1][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[1][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[1][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[1][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[2][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[2][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[0][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[0][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1921,26 +3199,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 5 && tabuleiro[1][2] == 'e'  ){
 						if(sentidoDesl == 5 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[1][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[0][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[0][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[2][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[1][2] = '.';
 							tabuleiro[2][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1949,46 +3257,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 6 && tabuleiro[2][0] == 'E'  ){
 						if(sentidoDesl == 6 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[2][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[2][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[2][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[2][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[2][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[1][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[1][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[0][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[0][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -1997,26 +3359,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 6 && tabuleiro[2][0] == 'e'  ){
 						if(sentidoDesl == 6 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[2][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[1][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[1][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[0][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[2][0] = '.';
 							tabuleiro[0][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -2025,46 +3417,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 7 && tabuleiro[2][1] == 'E'  ){
 						if(sentidoDesl == 7 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[2][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[2][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[2][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[2][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 6   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[2][0] = 'e';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][1] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[0][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][1] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[0][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -2073,26 +3519,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 7 && tabuleiro[0][1] == 'e'  ){
 						if(sentidoDesl == 7 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[2][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[2][1] = '.';
 							tabuleiro[1][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -2101,46 +3577,100 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 8 && tabuleiro[2][2] == 'E'  ){
 						if(sentidoDesl == 8 && casasDeslocadas == 0 && orientacao == 1){
 							tabuleiro[2][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[2][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[2][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[2][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[2][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[1][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[1][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[0][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[0][2] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -2149,26 +3679,56 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 8 && tabuleiro[2][2] == 'e'  ){
 						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 0){
 							tabuleiro[2][2] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1; //tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[1][1] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[1][1] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[0][0] = 'E';//perpendicular
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}
 						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
 							tabuleiro[2][2] = '.';
 							tabuleiro[0][0] = 'e';//diagonal
+							jogos.get(i).j.vez = 0;
+							for(int l = 0; l<jogos.size(); l++){
+								if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+									jogos.get(l).j.vez = 1;
+								}
+							}
 							return 1;//tudo certo
 						}else{
 							return 0;
@@ -2274,14 +3834,18 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	 }
 	 
 	 public boolean tabuleiroCheio(){
+		 int cont = 0;
 	        for(int linha=0 ; linha<3 ; linha++){
 	        	for(int coluna=0 ; coluna<3 ; coluna++){
-	        		if( tabuleiro[linha][coluna]=='.' ){
-	        			 return false;
+	        		if( tabuleiro[linha][coluna]!='.' ){
+	        			 cont++;
 	        		}
 	        	}
-	        }        
-	        return true;
+	        } 
+	        if(cont>=6){
+	        	return true;
+	        }
+	        return false;
 	 }
 
 }
