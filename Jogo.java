@@ -1966,19 +1966,24 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	@Override
 	public String obtemOponente(int id) throws RemoteException {
 		int idJog = idJogo;
+		String n = "";
 		for(int i = 0; i<jogos.size(); i++){
 			System.out.println(jogos.get(i).j.id);
 			if(jogos.get(i).j.id == id && jogos.get(i).numParticipantes !=2){
 				for(int l = 0; l<jogos.size(); l++){
-					if(jogos.get(l).idJogador == id && jogos.get(l).numParticipantes !=2){
+					if(jogos.get(l).j.id != id && jogos.get(l).numParticipantes !=2){
+						System.out.println("Id adversario: "+jogos.get(l).j.id);
+						n = jogos.get(l).j.nome;
 						jogos.get(l).numParticipantes = 2;
 						jogos.get(l).idJogo = idJog;
+						System.out.println("Jogador l: "+jogos.get(l).idJogo);
 					}
 				}
 				jogos.get(i).numParticipantes = 2;
 				jogos.get(i).idJogo = idJog;
+				System.out.println("Jogador i: "+jogos.get(i).idJogo);
 				idJogo++;
-				return "Seu oponente: "+jogos.get(i).j.nome;
+				return "Seu oponente: "+n;
 			}
 		}
 		
