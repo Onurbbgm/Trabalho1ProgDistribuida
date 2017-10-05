@@ -507,8 +507,1440 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	@Override
 	public int movePeca(int id, int posAtual, int sentidoDesl, int casasDeslocadas, int orientacao)
 			throws RemoteException {
+		int vez = ehMinhaVez(id);
+		if(vez != 1){
+			return -3;//nao eh a vez do jogador
+		}
+		if(!tabuleiroCheio()){
+			return -4; //tabuleiro nao esta cheio
+		}
 		
-		return 0;
+		for(int i = 0; i<jogos.size(); i++){
+			if(jogos.get(i).j.id == id && jogos.get(i).numParticipantes !=2){
+				return -2;//partida nao inicada ainda, nao ha dois jogadores
+			}
+			if(jogos.get(i).j.id == id && jogos.get(i).numParticipantes == 2){
+				//claras
+				if(jogos.get(i).j.numJogador == 1){
+					if(posAtual == 0 && tabuleiro[0][0] == 'C'  ){
+						if(sentidoDesl == 0 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[0][0] = 'c';//diagonal
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[0][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[0][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[0][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[0][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[1][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[1][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[2][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[2][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 0 && tabuleiro[0][0] == 'c'  ){
+						if(sentidoDesl == 0 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[0][0] = '.';
+							tabuleiro[0][0] = 'C';//perpendicular
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[1][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[1][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[2][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[2][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 1 && tabuleiro[0][1] == 'C'  ){
+						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[0][1] = 'c';//diagonal
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[0][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[0][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[0][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 0   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[0][0] = 'c';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[2][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[2][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 1 && tabuleiro[0][1] == 'c'  ){
+						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[0][1] = 'C';//perpendicular
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 2 && tabuleiro[0][2] == 'C'  ){
+						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[0][2] = 'c';//diagonal
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[0][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[0][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[0][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[0][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[1][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[1][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[2][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[2][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 2 && tabuleiro[0][2] == 'c'  ){
+						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[0][2] = 'C';//perpendicular
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[1][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[1][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[2][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[2][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 3 && tabuleiro[1][0] == 'C'  ){
+						if(sentidoDesl == 3 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[1][0] = 'c';//diagonal
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 6 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[2][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[2][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[0][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[0][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[1][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[1][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[1][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[1][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 3 && tabuleiro[1][0] == 'c'  ){
+						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[1][0] = 'C';//perpendicular
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[0][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[0][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[2][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[2][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 4 && tabuleiro[1][1] == 'C'  ){
+						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[1][1] = 'c';//diagonal
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[1][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[1][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[1][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[1][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 4 && tabuleiro[1][1] == 'c'  ){
+						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[1][1] = 'C';//perpendicular
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}						
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 5 && tabuleiro[1][2] == 'C'  ){
+						if(sentidoDesl == 5 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[1][2] = 'c';//diagonal
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[1][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[1][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[1][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[1][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[2][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[2][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[0][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[0][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 5 && tabuleiro[1][2] == 'c'  ){
+						if(sentidoDesl == 5 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[1][2] = 'C';//perpendicular
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[0][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[0][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[2][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[2][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 6 && tabuleiro[2][0] == 'C'  ){
+						if(sentidoDesl == 6 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[2][0] = 'c';//diagonal
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[2][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[2][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[2][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[2][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[1][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[1][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[0][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[0][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 6 && tabuleiro[2][0] == 'c'  ){
+						if(sentidoDesl == 6 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[2][0] = 'C';//perpendicular
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[1][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[1][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[0][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[0][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 7 && tabuleiro[2][1] == 'C'  ){
+						if(sentidoDesl == 7 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[2][1] = 'c';//diagonal
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[2][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[2][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[2][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 6   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[2][0] = 'c';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[0][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[0][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 7 && tabuleiro[0][1] == 'c'  ){
+						if(sentidoDesl == 7 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[2][1] = 'C';//perpendicular
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 8 && tabuleiro[2][2] == 'C'  ){
+						if(sentidoDesl == 8 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[2][2] = 'c';//diagonal
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[2][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[2][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[2][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[2][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[1][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[1][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[0][2] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[0][2] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 8 && tabuleiro[2][2] == 'c'  ){
+						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[2][2] = 'C';//perpendicular
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[1][1] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[1][1] = 'c';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[0][0] = 'C';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[0][0] = 'c';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+				}
+				//escuras
+				if(jogos.get(i).j.numJogador == 1){
+					if(posAtual == 0 && tabuleiro[0][0] == 'E'  ){
+						if(sentidoDesl == 0 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[0][0] = 'e';//diagonal
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[0][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[0][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[0][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[0][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[1][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[1][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[2][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[2][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 0 && tabuleiro[0][0] == 'e'  ){
+						if(sentidoDesl == 0 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[0][0] = '.';
+							tabuleiro[0][0] = 'E';//perpendicular
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[1][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[1][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[2][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[0][0] = '.';
+							tabuleiro[2][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 1 && tabuleiro[0][1] == 'E'  ){
+						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[0][1] = 'e';//diagonal
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 2 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[0][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[0][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[0][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 0   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[0][0] = 'e';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[2][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[2][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 1 && tabuleiro[0][1] == 'e'  ){
+						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[0][1] = 'E';//perpendicular
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[0][1] = '.';
+							tabuleiro[1][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 2 && tabuleiro[0][2] == 'E'  ){
+						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[0][2] = 'e';//diagonal
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[0][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[0][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[0][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 1 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[0][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[1][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[1][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[2][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[2][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 2 && tabuleiro[0][2] == 'e'  ){
+						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[0][2] = 'E';//perpendicular
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[1][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[1][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[2][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 6 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[0][2] = '.';
+							tabuleiro[2][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 3 && tabuleiro[1][0] == 'E'  ){
+						if(sentidoDesl == 3 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[1][0] = 'e';//diagonal
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 6 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[2][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[2][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[0][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[0][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[1][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[1][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[1][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 5 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[1][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 3 && tabuleiro[1][0] == 'e'  ){
+						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[1][0] = 'E';//perpendicular
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[0][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[0][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[2][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][0] = '.';
+							tabuleiro[2][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 4 && tabuleiro[1][1] == 'E'  ){
+						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[1][1] = 'e';//diagonal
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 1 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[1][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[1][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[1][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[1][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 4 && tabuleiro[1][1] == 'e'  ){
+						if(sentidoDesl == 1 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[1][1] = 'E';//perpendicular
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[2][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}						
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 0  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[1][1] = '.';
+							tabuleiro[0][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 5 && tabuleiro[1][2] == 'E'  ){
+						if(sentidoDesl == 5 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[1][2] = 'e';//diagonal
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[1][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[1][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[1][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 3 || sentidoDesl == 4 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[1][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[2][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[2][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[0][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 2  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[0][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 5 && tabuleiro[1][2] == 'e'  ){
+						if(sentidoDesl == 5 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[1][2] = 'E';//perpendicular
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[0][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 1  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[0][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[2][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 7  && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[1][2] = '.';
+							tabuleiro[2][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 6 && tabuleiro[2][0] == 'E'  ){
+						if(sentidoDesl == 6 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[2][0] = 'e';//diagonal
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[2][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[2][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[2][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 7 || sentidoDesl == 8 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[2][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[1][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[1][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[0][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 0 || sentidoDesl == 3 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[0][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 6 && tabuleiro[2][0] == 'e'  ){
+						if(sentidoDesl == 6 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[2][0] = 'E';//perpendicular
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[1][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[1][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[0][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[2][0] = '.';
+							tabuleiro[0][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 7 && tabuleiro[2][1] == 'E'  ){
+						if(sentidoDesl == 7 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[2][1] = 'e';//diagonal
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 8 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][2] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[2][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 8  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][2] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[2][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 6  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[2][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 6   && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[2][0] = 'e';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][1] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[0][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 1 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][1] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[0][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 7 && tabuleiro[0][1] == 'e'  ){
+						if(sentidoDesl == 7 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[2][1] = 'E';//perpendicular
+							return 1; //tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][0] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 3  && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][0] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if(sentidoDesl == 5 && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[2][1] = '.';
+							tabuleiro[1][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 8 && tabuleiro[2][2] == 'E'  ){
+						if(sentidoDesl == 8 && casasDeslocadas == 0 && orientacao == 1){
+							tabuleiro[2][2] = 'e';//diagonal
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[2][1] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[2][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[2][1] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[2][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[2][0] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[2][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 6 || sentidoDesl == 7 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[2][0] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[2][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][2] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[1][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][2] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[1][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][2] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[0][2] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 5 || sentidoDesl == 2 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][2] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[0][2] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					if(posAtual == 8 && tabuleiro[2][2] == 'e'  ){
+						if(sentidoDesl == 2 && casasDeslocadas == 0 && orientacao == 0){
+							tabuleiro[2][2] = 'E';//perpendicular
+							return 1; //tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 0 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[1][1] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 1 && orientacao == 1 && tabuleiro[1][1] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[1][1] = 'e';//diagonal
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 0 && tabuleiro[0][0] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[0][0] = 'E';//perpendicular
+							return 1;//tudo certo
+						}
+						if((sentidoDesl == 4 || sentidoDesl == 0 ) && casasDeslocadas == 2 && orientacao == 1 && tabuleiro[0][0] == '.'){
+							tabuleiro[2][2] = '.';
+							tabuleiro[0][0] = 'e';//diagonal
+							return 1;//tudo certo
+						}else{
+							return 0;
+						}	
+					}
+					
+				}
+			}
+		}
+		
+		return -1;
 	}
 
 	@Override
