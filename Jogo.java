@@ -16,6 +16,13 @@ class Jogador{
 	}
 }
 
+class Partida{
+	public int numParticipantes;
+	public Partida(int numParticipantes){
+		this.numParticipantes = numParticipantes;
+	}
+}
+
 public class Jogo extends UnicastRemoteObject implements JogoInterface {
 
 	/**
@@ -23,8 +30,8 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	 */
 	private static final long serialVersionUID = 6636057431278727855L;
 	
-	private ArrayList<Jogador> jogadores = new ArrayList<>();
-	private ArrayList<Jogo> jogos = new ArrayList<>();
+	private ArrayList<Jogador> jogadores;
+	private ArrayList<Jogo> jogos;
 	private char[][] tabuleiro = new char[3][3];
 	private char peca;
 	private static int idJogador = 1;
@@ -32,10 +39,13 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	private int numParticipantes;
 	private Jogador j;
 	
-	public Jogo(int numParticipantes, Jogador j, int idJogo) throws RemoteException {
+	
+	public Jogo(Jogador j/*int numParticipantes, Jogador j, int idJogo*/) throws RemoteException {
 		this.numParticipantes = numParticipantes;
 		this.j = j;
-		this.idJogo = idJogo;
+		//this.idJogo = idJogo;
+		jogadores = new ArrayList<Jogador>();
+		jogos = new ArrayList<Jogo>();
 		for(int linha=0 ; linha<3 ; linha++){
 			for(int coluna=0 ; coluna<3 ; coluna++){
 				tabuleiro[linha][coluna]='.';
@@ -44,6 +54,9 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
             
 	}
 	
+	public void setNumParticipantes(int numParticipantes){
+		this.numParticipantes = numParticipantes;
+	}
 	
 	@Override
 	public int registraJogador(String nome) throws RemoteException {
@@ -58,7 +71,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 		}
 		Jogador j = new Jogador(nome,id,0,0);
 		jogadores.add(j);
-		Jogo jog = new Jogo(1, j, 0);
+		Jogo jog = new Jogo(j/*1, j, 0*/);
 		jogos.add(jog);
 		idJogador++;
 		return id;
@@ -71,12 +84,12 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 			for(int i = 0; i<jogos.size(); i++){
 				if(jogos.get(i).j.id == id && jogos.get(i).numParticipantes == 2){
 					jogos.remove(i);
-					return 1;
+					return 0;//partida encerradad com sucesso
 				}
 			}		
 		}
 		
-		return 0;//partida encerradad com sucesso
+		return -1;//erro
 	}
 
 	@Override
@@ -1954,9 +1967,10 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	public String obtemOponente(int id) throws RemoteException {
 		int idJog = idJogo;
 		for(int i = 0; i<jogos.size(); i++){
-			if(jogos.get(i).idJogo == 0){
+			System.out.println(jogos.get(i).j.id);
+			if(jogos.get(i).j.id == id && jogos.get(i).numParticipantes !=2){
 				for(int l = 0; l<jogos.size(); l++){
-					if(jogos.get(l).j.id == id){
+					if(jogos.get(l).idJogador == id && jogos.get(l).numParticipantes !=2){
 						jogos.get(l).numParticipantes = 2;
 						jogos.get(l).idJogo = idJog;
 					}

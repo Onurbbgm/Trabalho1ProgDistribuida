@@ -19,6 +19,7 @@ public class JogoCliente {
 			System.out.println("Informe seu nome: ");
 			nome = entrada.next();
 			int id = j.registraJogador(nome);
+			System.out.println("Seu id:"+id);
 			int continua = 1;
 			int opcao = 0;
 			while(continua!=0){
@@ -63,6 +64,7 @@ public class JogoCliente {
 							break;
 				}
 			}
+			System.out.println("Fim!");
 		}catch (Exception e){
 			System.out.println ("Falha JogoCliente!");
 			e.printStackTrace();
