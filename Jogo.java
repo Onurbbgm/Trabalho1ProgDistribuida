@@ -66,8 +66,15 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 
 	@Override
 	public int encerraPartida(int id) throws RemoteException {
-		
-		
+		int acabou = ehMinhaVez(id);
+		if(acabou !=1 && acabou != -1 && acabou != -2){
+			for(int i = 0; i<jogos.size(); i++){
+				if(jogos.get(i).j.id == id && jogos.get(i).numParticipantes == 2){
+					jogos.remove(i);
+					return 1;
+				}
+			}		
+		}
 		
 		return 0;//partida encerradad com sucesso
 	}
@@ -137,10 +144,10 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 				return 3; //eh o perdedor
 			}
 			if(jogos.get(i).j.id == id && tempo1 == 0){ //placeholder
-				return 6;
+				return 6; //perdedor por WO
 			}
 			if(jogos.get(i).j.id == id && tempo2 == 0){ //placeholder
-				return 5;
+				return 5;//vencedor por WO
 			}
 			if(jogos.get(i).j.id == id && jogos.get(i).j.vez == 1){
 				return 1;//sim
