@@ -16,6 +16,6 @@ public interface JogoInterface extends Remote{
 	
 	public int movePeca(int id, int posAtual, int sentidoDesl, int casasDeslocadas, int orientacao ) throws RemoteException;
 	
-	public int obtemOponente(int id) throws RemoteException;
+	public String obtemOponente(int id) throws RemoteException;
 	
 }
