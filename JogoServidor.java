@@ -13,7 +13,7 @@ public class JogoServidor {
 		}
 		try{
 			char[][] tabuleiro = new char[3][3];
-			Naming.rebind("Jogo", new Jogo(new Jogador(null,0,0,0), tabuleiro));
+			Naming.rebind("Jogo", new Jogo(new Jogador(null,0,0,0,0), new Jogador(null,0,0,0,0),tabuleiro));
 			System.out.println("JogoServidor esta pronto!");
 		}catch (Exception e){
 			System.out.println("Falha JogoServidor!");

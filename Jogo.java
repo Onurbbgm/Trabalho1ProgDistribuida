@@ -8,11 +8,13 @@ class Jogador{
 	public int id;
 	public int numJogador;
 	public int vez;
-	public Jogador(String nome, int id, int numJogador, int vez){
+	public int estaNumPartida;
+	public Jogador(String nome, int id, int numJogador, int vez, int estaNumPartida){
 		this.nome = nome;
 		this.id = id;
 		this.numJogador = numJogador;
 		this.vez = vez;
+		this.estaNumPartida = estaNumPartida;
 	}
 }
 
@@ -30,23 +32,25 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	 */
 	private static final long serialVersionUID = 6636057431278727855L;
 	
-	private ArrayList<Jogador> jogadores;
-	private ArrayList<Jogo> jogos;
+	private ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
+	private ArrayList<Jogo> jogos = new ArrayList<Jogo>();
 	private char[][] tabuleiro = new char[3][3];
 	private char peca;
 	private static int idJogador = 1;
 	private static int idJogo = 1;
 	private int numParticipantes;
 	private Jogador j;
+	private Jogador j2;
 	private long contTemBuscaJog;
 	
 	
-	public Jogo(Jogador j, char[][] tabuleiro/*int numParticipantes, Jogador j, int idJogo*/) throws RemoteException {
+	public Jogo(Jogador j1, Jogador j2, char[][] tabuleiro /*,int numParticipantes, Jogador j, int idJogo*/) throws RemoteException {
 		this.numParticipantes = numParticipantes;
-		this.j = j;
+		j = j1;
+		this.j2 = j2;
 		//this.idJogo = idJogo;
-		jogadores = new ArrayList<Jogador>();
-		jogos = new ArrayList<Jogo>();
+//		jogadores = new ArrayList<Jogador>();
+//		jogos = new ArrayList<Jogo>();
 		this.tabuleiro = tabuleiro;
 		for(int linha=0 ; linha<3 ; linha++){
 			for(int coluna=0 ; coluna<3 ; coluna++){
@@ -71,11 +75,11 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 				return -1; //Usuariao ja cadastrado
 			}
 		}
-		Jogador j = new Jogador(nome,id,0,0);
+		Jogador j = new Jogador(nome,id,0,0,0);
 		jogadores.add(j);
-		char[][] tab = tabuleiro;
-		Jogo jog = new Jogo(j,tab);
-		jogos.add(jog);
+		//char[][] tab = tabuleiro;
+		//Jogo jog = new Jogo(j, null);
+		//jogos.add(jog);
 		idJogador++;
 		contTemBuscaJog = System.currentTimeMillis();
 		return id;
@@ -87,7 +91,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 		if(acabou !=1 && acabou != -1 && acabou != -2){
 			for(int i = 0; i<jogos.size(); i++){
 				if(jogos.get(i).j.id == id && jogos.get(i).numParticipantes == 2){
-					jogos.remove(i);
+					jogos.remove(i);//FALTA REMOVER OS JOGADORES TB DO ARRAY
 					return 0;//partida encerradad com sucesso
 				}
 			}		
@@ -107,15 +111,15 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					return jogos.get(i).j.numJogador;
 				}
 				
-				for(int l = 0; l<jogos.size(); l++){
+				//for(int l = 0; l<jogos.size(); l++){
 					//Para procurar pelo outro jogador que esta associado ao mesmo jogo pelo idJogo
-					if(jogos.get(l).idJogo == jogos.get(i).idJogo && jogos.get(l).j.id != id){
-						if(jogos.get(l).j.numJogador==1){
+					//if(jogos.get(i).j2 == jogos.get(i).idJogo && jogos.get(l).j.id != id){
+						if(jogos.get(i).j2.numJogador==1){
 							jogos.get(i).j.numJogador = 2;
 							jogos.get(i).j.vez = 0;
 							return jogos.get(i).j.numJogador;
 						}
-						if(jogos.get(l).j.numJogador==2){
+						if(jogos.get(i).j2.numJogador==2){
 							jogos.get(i).j.numJogador = 1;
 							jogos.get(i).j.vez = 1;
 							return jogos.get(i).j.numJogador;
@@ -125,27 +129,27 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						    jogos.get(i).j.numJogador = randomNum;
 						    if(randomNum==1){
 						    	jogos.get(i).j.vez = 1;
-						    	jogos.get(l).j.numJogador = 2;
-						    	jogos.get(l).j.vez = 0;
+						    	jogos.get(i).j2.numJogador = 2;
+						    	jogos.get(i).j2.vez = 0;
 						    }
 						    if(randomNum == 2){
-						    	jogos.get(l).j.vez = 1;
-						    	jogos.get(l).j.numJogador = 1;
+						    	jogos.get(i).j2.vez = 1;
+						    	jogos.get(i).j2.numJogador = 1;
 						    	jogos.get(i).j.vez = 0;
 						    }
 							return randomNum;
 						}
-					}
-				}	
+					//}
+				//}	
 			}
 		}
 		//placeholder, ainda tem que ser implementado
-		int tempo = 1;
-		if(tempo==0){
-			return -2; //tempo de espera esgotado
-		}else{
+		//int tempo = 1;
+		//if(tempo==0){
+			//return -2; //tempo de espera esgotado
+		//}else{
 			return -1;//erro
-		}
+		//}
 	}
 
 	
@@ -154,13 +158,13 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 		int tempo1 = 1; //placeholder, para ser implementado timeout
 		int tempo2 = 1; //placeholder, para ser implementado timeout
 		for(int i = 0; i<jogos.size(); i++){
-			if(jogos.get(i).j.id==id && jogos.get(i).numParticipantes !=2){
+			if((jogos.get(i).j.id==id && jogos.get(i).numParticipantes !=2) || (jogos.get(i).j2.id==id && jogos.get(i).numParticipantes !=2)){
 				return -2; //ainda nao tem 2 jogadores
 			}
-			if(jogos.get(i).j.id==id && venceu(id)!=0 && venceu(id)==jogos.get(i).j.numJogador){
+			if((jogos.get(i).j.id==id && venceu(id)!=0 && venceu(id)==jogos.get(i).j.numJogador)||(jogos.get(i).j2.id==id && venceu(id)!=0 && venceu(id)==jogos.get(i).j2.numJogador)){
 				return 2; //eh o vencedor
 			}
-			if(jogos.get(i).j.id==id && venceu(id)!=0 && venceu(id)!=jogos.get(i).j.numJogador){
+			if((jogos.get(i).j.id==id && venceu(id)!=0 && venceu(id)!=jogos.get(i).j.numJogador) || (jogos.get(i).j2.id==id && venceu(id)!=0 && venceu(id)!=jogos.get(i).j2.numJogador)){
 				return 3; //eh o perdedor
 			}
 			if(jogos.get(i).j.id == id && tempo1 == 0){ //placeholder
@@ -169,10 +173,10 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 			if(jogos.get(i).j.id == id && tempo2 == 0){ //placeholder
 				return 5;//vencedor por WO
 			}
-			if(jogos.get(i).j.id == id && jogos.get(i).j.vez == 1){
+			if((jogos.get(i).j.id == id && jogos.get(i).j.vez == 1) || (jogos.get(i).j2.id == id && jogos.get(i).j2.vez == 1)){
 				return 1;//sim
 			}
-			if(jogos.get(i).j.id == id && jogos.get(i).j.vez == 0){
+			if((jogos.get(i).j.id == id && jogos.get(i).j.vez == 0) || (jogos.get(i).j2.id == id && jogos.get(i).j2.vez == 0)){
 				return 0;//nao
 			}
 			
@@ -183,7 +187,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	@Override
 	public String obtemTabuleiro(int id) throws RemoteException {
 		for(int i = 0; i<jogos.size(); i++){
-			if(jogos.get(i).j.id==id){
+			if(jogos.get(i).j.id==id || jogos.get(i).j2.id==id ){
 				String tab = "";
 		        for(int linha=0 ; linha<3 ; linha++){
 		        
@@ -3823,33 +3827,55 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 			return "Tempo Esgotado";	
 		}
 		String n = "";
-		for(int i = 0; i<jogos.size(); i++){
-			System.out.println("IdJogador:" + jogos.get(i).j.id);
-			if(jogos.get(i).j.id == id && jogos.get(i).numParticipantes !=2){
-				for(int l = 0; l<jogos.size(); l++){
-					if(jogos.get(l).j.id != id && jogos.get(l).numParticipantes !=2){
-						System.out.println("Id adversario: "+jogos.get(l).j.id);
-						n = jogos.get(l).j.nome;
-						jogos.get(l).numParticipantes = 2;
-						jogos.get(l).idJogo = idJog;
-						System.out.println("IdJogo l: "+jogos.get(l).idJogo);
-						jogos.get(i).numParticipantes = 2;
-						jogos.get(i).idJogo = idJog;
-						System.out.println("IdJogo i: "+jogos.get(i).idJogo);
+		char[][] tab = new char[3][3];
+		for(int linha=0 ; linha<3 ; linha++){
+			for(int coluna=0 ; coluna<3 ; coluna++){
+				tab[linha][coluna]='.';
+			}      
+		}
+		Jogador j1 = null;
+		for(int h = 0; h<jogadores.size(); h++){
+			if(jogadores.get(h).id == id){
+				j1 = jogadores.get(h);
+			}
+		}
+		//nao esquecer de mudar j1 esta numa partida para 1
+		//Jogo jog = new Jogo(j1,tab);
+		//jogos.add(jog);
+		//for(int i = 0; i<jogadores.size(); i++){
+		//	System.out.println("IdJogador:" + jogadores.get(i).id);
+			if(j1.id == id && j1.estaNumPartida == 0){
+				for(int l = 0; l<jogadores.size(); l++){
+					if(jogadores.get(l).id != id && jogadores.get(l).estaNumPartida == 0){
+						System.out.println("Id adversario: "+jogadores.get(l).id);
+						Jogador j2 = jogadores.get(l);
+						n = j2.nome;
+						j2.estaNumPartida = 1;
+						j1.estaNumPartida = 1;
+						Jogo jog = new Jogo(j1,j2,tab);
+						jog.numParticipantes = 2;
+						jog.idJogo = idJog;
+						jogos.add(jog);
+						
+						//jogos.get(l).idJogo = idJog;
+						
+						//System.out.println("IdJogo l: "+jogos.get(l).idJogo);
+						//jogos.get(i).idJogo = idJog;
+						//System.out.println("IdJogo i: "+jogos.get(i).idJogo);
 						idJogo++;
 						return "Seu oponente: "+n;
 					}
 				}
 				
 			}
-		}
+		//}
 		
 		return "";//erro
 	}
 	
 	public int verificaLinhas(int id){
 		for(int i = 0; i < jogos.size(); i++){
-			if(jogos.get(i).j.id == id){
+			if(jogos.get(i).j.id == id || jogos.get(i).j2.id == id){
 				 for(int linha=0 ; linha<3 ; linha++){
 			            if( (jogos.get(i).tabuleiro[linha][0] == 'c'||jogos.get(i).tabuleiro[linha][0] == 'C') && (jogos.get(i).tabuleiro[linha][1] == 'c' || jogos.get(i).tabuleiro[linha][1] == 'C') &&  (jogos.get(i).tabuleiro[linha][2] == 'c'||jogos.get(i).tabuleiro[linha][2] == 'C')){
 			                return 1;//claras
@@ -3867,7 +3893,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	
 	  public int verificaColunas(int id){
 		  for(int i = 0; i < jogos.size(); i++){
-				if(jogos.get(i).j.id == id){
+				if(jogos.get(i).j.id == id || jogos.get(i).j2.id == id){
 					 for(int coluna=0 ; coluna<3 ; coluna++){
 				        	if( (jogos.get(i).tabuleiro[0][coluna] == 'c'||jogos.get(i).tabuleiro[0][coluna] == 'C') && (jogos.get(i).tabuleiro[1][coluna] == 'c' || jogos.get(i).tabuleiro[1][coluna] == 'C') &&  (jogos.get(i).tabuleiro[2][coluna] == 'c'||jogos.get(i).tabuleiro[2][coluna] == 'C')){
 				                return 1;//claras
@@ -3884,7 +3910,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	  
 	 public int verificaDiagonais(int id){
 		 for(int i = 0; i < jogos.size(); i++){
-				if(jogos.get(i).j.id == id){
+				if(jogos.get(i).j.id == id || jogos.get(i).j2.id == id){
 					if( (jogos.get(i).tabuleiro[0][0] == 'c'||jogos.get(i).tabuleiro[0][0] == 'C') && (jogos.get(i).tabuleiro[1][1] == 'c' || jogos.get(i).tabuleiro[1][1] == 'C') &&  (jogos.get(i).tabuleiro[2][2] == 'c'||jogos.get(i).tabuleiro[2][2] == 'C')){
 						 return 1;//claras
 					 }
