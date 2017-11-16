@@ -4266,7 +4266,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 	 public boolean tabuleiroCheio(int id){
 		 int cont = 0;
 		 for(int i = 0; i < jogos.size(); i++){
-				if(jogos.get(i).j.id == id){
+				if(jogos.get(i).j.id == id || jogos.get(i).j2.id == id){
 					for(int linha=0 ; linha<3 ; linha++){
 			        	for(int coluna=0 ; coluna<3 ; coluna++){
 			        		if( jogos.get(i).tabuleiro[linha][coluna]!='.' ){
