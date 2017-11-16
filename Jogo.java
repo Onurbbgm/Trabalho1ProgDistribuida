@@ -883,7 +883,6 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 						if(sentidoDesl == 5  && casasDeslocadas == 1 && orientacao == 1 && jogos.get(i).tabuleiro[0][1] == '.'){
 							jogos.get(i).tabuleiro[0][0] = '.';
 							jogos.get(i).tabuleiro[0][1] = 'c';//diagonal
-							jogos.get(i).j.vez = 0;
 							if(jogos.get(i).j2.vez == 0){
 								jogos.get(i).j.vez = 0;
 								jogos.get(i).j2.vez = 1;
@@ -1964,7 +1963,6 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 					if(posAtual == 6 && jogos.get(i).tabuleiro[2][0] == 'C'  ){
 						if(sentidoDesl == 4 && casasDeslocadas == 0 && orientacao == 1){
 							jogos.get(i).tabuleiro[2][0] = 'c';//diagonal
-							jogos.get(i).j.vez = 0;
 							if(jogos.get(i).j2.vez == 0){
 								jogos.get(i).j.vez = 0;
 								jogos.get(i).j2.vez = 1;
