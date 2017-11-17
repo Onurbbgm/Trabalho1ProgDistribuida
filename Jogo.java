@@ -792,7 +792,7 @@ public class Jogo extends UnicastRemoteObject implements JogoInterface {
 							}
 						}
 						if(pos == 8 && orientacao == 0){ //orientacao = 0 eh perpendicular, que eh E
-							if(jogos.get(i).jogos.get(i).tabuleiro[2][2] == '.'){
+							if(jogos.get(i).tabuleiro[2][2] == '.'){
 								jogos.get(i).tabuleiro[2][2] = 'E';
 								if(jogos.get(i).j2.vez == 0){
 									jogos.get(i).j.vez = 0;
